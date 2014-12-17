@@ -14,7 +14,6 @@ public class DerivativeCalc {
 public static void main(String[] args) {
         Scanner console = new Scanner(System.in);
         String str=console.nextLine().toLowerCase();
-        System.out.print("here");
         String spaceless = "";
         for (int i = 0; i < str.length(); i++) {
             if(str.charAt(i) != ' ')
