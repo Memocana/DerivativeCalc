@@ -38,7 +38,7 @@ public static void main(String[] args) {
     }  
     public static boolean isNumeric(String str)  {  
         try  {  
-            int d = Integer.parseInt(str);  
+            double d = Double.parseDouble(str);  
         }  
         catch(NumberFormatException nfe) {  
             return false;  
@@ -82,9 +82,9 @@ public static void main(String[] args) {
         else if(str.indexOf("^") != -1 && str.indexOf("^") + 2 < str.length() && str.charAt(str.indexOf("^") - 1) == 'x' && str.charAt(str.indexOf("^") + 2) == 'x') //x^x
             return "(ln(x) + 1)x^(x)" +derive(str.substring(str.indexOf("x")+6));
         else if (str.indexOf("^") != -1 && str.indexOf("^") - str.indexOf("x") == 1 && (str.indexOf("(") == -1 || str.indexOf("(") > str.indexOf("^"))) 
-            return (Integer.parseInt(str.substring(0,str.indexOf("x")))*Integer.parseInt((str.substring(str.indexOf("^")+1))) + "x^(" + (Integer.parseInt(str.substring(str.indexOf("^")+1))-1))+")";
+            return (Double.parseDouble(str.substring(0,str.indexOf("x")))*Double.parseDouble((str.substring(str.indexOf("^")+1))) + "x^(" + (Double.parseDouble(str.substring(str.indexOf("^")+1))-1))+")";
         else if (str.indexOf("^") != -1)
-            return str.substring(str.indexOf("^")+1,str.indexOf("("))+" * "+(str.substring(0,str.indexOf("^")) +str.substring(str.indexOf("("),findMatch(str,str.indexOf("("))+1)) +"^(" +(Integer.parseInt(str.substring(str.indexOf("^")+1,str.indexOf("("))) - 1) +") * ("+derive(str.substring(0,str.indexOf("^")) +str.substring(str.indexOf("("),findMatch(str,str.indexOf("("))+1)) +")";
+            return str.substring(str.indexOf("^")+1,str.indexOf("("))+" * "+(str.substring(0,str.indexOf("^")) +str.substring(str.indexOf("("),findMatch(str,str.indexOf("("))+1)) +"^(" +(Double.parseDouble(str.substring(str.indexOf("^")+1,str.indexOf("("))) - 1) +") * ("+derive(str.substring(0,str.indexOf("^")) +str.substring(str.indexOf("("),findMatch(str,str.indexOf("("))+1)) +")";
         return str;
     }
     public static String format(String str) {
