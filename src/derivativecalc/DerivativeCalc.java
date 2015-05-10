@@ -35,6 +35,8 @@ public static void main(String[] args) {
         System.out.println(unFormatted);
         unFormatted = format(unFormatted);
         System.out.println(unFormatted);
+        unFormatted = format(unFormatted);
+        System.out.println(unFormatted);
     }  
     public static boolean isNumeric(String str)  {  
         try  {  
@@ -90,8 +92,18 @@ public static void main(String[] args) {
     public static String format(String str) {
         String formatted = "";
         for (int i = 0; i < str.length(); i++) {
+            if(i<str.length()-7&&str.substring(i,i+8).equals(" * (1.0)"))
+                i+=9;
+            if(i<str.length()-5&&str.substring(i,i+6).equals("*(1.0)"))
+                i+=7;
+            if(i<str.length()-3&&str.substring(i,i+4).equals("^1.0"))
+                i+=4;
+            if(i<str.length()-3&&str.substring(i,i+4).equals("-1*-"))
+                i+=4;
+            if(i<str.length()-1&&str.substring(i,i+2).equals("0*")&&!str.substring(i-1,i).equals("."))
+                i+=findNextAdd(str.substring(i));
             if(i+1 < str.length() && str.charAt(i) == '1' && (str.charAt(i+1) == 'x' && (i - 1 < 0 || (i - 1 >= 0 && !isNumeric(str.substring(i-1,i))))) ) {
-                i++;
+                i+=1;
             }
             if (i+1 < str.length() && str.charAt(i) == '^' && (str.charAt(i+1) == '1' &&(i + 2 >= str.length() || (str.charAt(i+2) != 'x' && !isNumeric(str.substring(i+2,i+3)))))) {
                 i+=2;
@@ -102,7 +114,13 @@ public static void main(String[] args) {
             if (i+3 < str.length() && str.charAt(i) == 'x' && (str.charAt(i+1) == '^' && str.charAt(i+3) == '0')) {
                 if (!((i - 1 < 0 || (i - 1 >= 0 && isNumeric(str.substring(i-1,i)) && str.charAt(i-1) != '1'))))
                     formatted += "1";
-                i+=5;
+                i+=7;
+            }
+            if (i<str.length()-2&&str.substring(i,i+2).equals("^(")&& notHasX(str.substring(i+1))) {
+                i+=1;
+                formatted+="^";
+                formatted+=str.substring(i+1,i+findMatch(str.substring(i),0));
+                i+=findMatch(str.substring(i),0)+1;
             }
             if(i < str.length()) {
                 formatted += str.charAt(i);
@@ -110,6 +128,15 @@ public static void main(String[] args) {
         }
         return formatted;
     }
+    
+    public static boolean notHasX(String str) {
+        for (int i = 0; i < findMatch(str,0); i++) {
+            if (str.charAt(i)=='x')
+                return false;
+        }
+        return true;
+    }
+    
     public static int findMatch(String str, int pos) {
         int open = 1;
         for (int i = pos + 1; i < str.length(); i++) {
@@ -122,5 +149,26 @@ public static void main(String[] args) {
         }
         return pos + 2;
     }
+    
+    public static int findNextAdd(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '(')
+                i = findMatch(str,i);
+            if (str.charAt(i) == '+' || str.charAt(i) == '-')
+                return i+2;
+        }
+        return str.length();
+    }
+    
+    public static int findNextPrev(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '(')
+                i = findMatch(str,i);
+            if (str.charAt(i) == '+' || str.charAt(i) == '-')
+                return i+2;
+        }
+        return str.length();
+    }
+    
 }
 //ceeeeeeem
