@@ -102,6 +102,10 @@ public static void main(String[] args) {
                 i+=4;
             if(i<str.length()-1&&str.substring(i,i+2).equals("0*")&&!str.substring(i-1,i).equals("."))
                 i+=findNextAdd(str.substring(i));
+            if(i<str.length()-1&&str.substring(i,i+2).equals("*0")){
+                formatted=formatted.substring(0, findPrevAdd(formatted)-1);
+                i+=2;
+            }
             if(i+1 < str.length() && str.charAt(i) == '1' && (str.charAt(i+1) == 'x' && (i - 1 < 0 || (i - 1 >= 0 && !isNumeric(str.substring(i-1,i))))) ) {
                 i+=1;
             }
@@ -129,6 +133,32 @@ public static void main(String[] args) {
         return formatted;
     }
     
+    /*public static String repeatFormatter(String str) {
+        String formatted = "";
+        int lost = 0;
+        for (int i = 0; i <= str.length(); i++) { 
+            if(i<str.length()-1&&str.substring(i,i+2).equals("*(")){
+                if (str.charAt(i-1) == ')') {
+                    
+                    String repeat = pattern(str, i-1);
+                    int times = repeatAmount(str, i-1, repeat);
+                    if (times != 1) {
+                        System.out.println(formatted);
+                        System.out.println(repeat.length());
+                        formatted = formatted.substring(0,(i-lost)-repeat.length()-1) + fixRepeat(str, i-1)+")";
+                        i+= (times-1)*repeat.length()+3;
+                        lost += (times-1)*repeat.length()-1;
+                        System.out.println(formatted);
+                    }
+                }
+            }
+            if(i < str.length()) {
+                formatted += str.charAt(i);
+            }
+        }
+        return formatted;
+    }*/
+    
     public static boolean notHasX(String str) {
         for (int i = 0; i < findMatch(str,0); i++) {
             if (str.charAt(i)=='x')
@@ -150,6 +180,19 @@ public static void main(String[] args) {
         return pos + 2;
     }
     
+    public static int findMatchRev(String str, int pos) {
+        int open = 1;
+        for (int i = pos-1; i >= 0; i--) {
+            if (str.charAt(i) == ')')
+                open++;
+            if (str.charAt(i) == '(')
+                open--;
+            if (open == 0)
+                return i;
+        }
+        return pos - 2;
+    }
+    
     public static int findNextAdd(String str) {
         for (int i = 0; i < str.length(); i++) {
             if (str.charAt(i) == '(')
@@ -160,15 +203,59 @@ public static void main(String[] args) {
         return str.length();
     }
     
-    public static int findNextPrev(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == '(')
-                i = findMatch(str,i);
+    public static int findPrevAdd(String str) {
+        for (int i = str.length()-1; i >= 0; i--) {
+            if (str.charAt(i) == ')')
+                i = findMatchRev(str,i);
             if (str.charAt(i) == '+' || str.charAt(i) == '-')
-                return i+2;
+                return i-2;
         }
         return str.length();
     }
+    /*
+    public static String pattern(String str, int pos) {
+        int repeatPos = findMatchRev(str,pos);
+        return str.substring(repeatPos+1,pos);
+    }
     
+    public static int repeatAmount(String str, int pos, String repeat) {
+        int length = repeat.length()+3;
+        int repeatPos = findMatchRev(str,pos);
+        int times = 0;
+        for (int i = repeatPos; i < str.length()-length; i+=length) {
+            System.out.println(str.substring(i+1,i+length-2)+"repeated pattern");
+            if (str.substring(i+1,i+length-2).equals(repeat)) {
+                times++;
+            } else {
+                break;
+            }
+        }
+        return times;
+    }
+    
+    public static String fixRepeat(String str, int pos) {
+        int repeatPos = findMatchRev(str,pos);
+        String repeat = pattern(str, pos);
+        int length = repeat.length()+3;        
+        int times = repeatAmount(str, pos, repeat);
+        if (repeat.indexOf('x') != -1) {
+            int xPos = repeat.indexOf('x');
+            String katSayi = "0";
+            if (xPos != 0) {
+                katSayi = repeat.substring(0,xPos);
+            }
+            String power = "1";
+            if (repeat.substring(xPos).indexOf('^') != -1) {
+                power = repeat.substring(xPos+2);
+            }
+            double requiredKatSayi = Math.pow(Double.parseDouble(katSayi), times);
+            double requiredPower = Double.parseDouble(power)*times;
+            return requiredKatSayi+"x^"+requiredPower;
+        } else {
+            double requiredValue = Math.pow(Double.parseDouble(repeat), times);
+            return requiredValue+"";
+        }
+        
+    }*/
 }
 //ceeeeeeem
